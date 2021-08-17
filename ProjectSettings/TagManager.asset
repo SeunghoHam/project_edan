@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Player_Pickup
+  - Feather
+  - Coin
+  - Enemy
+  - RaceFinish
+  - p_Back
+  - e_Back
+  - FeatherItem
+  - Ground
+  - PlayerManager
+  - CollectibleObj
+  - CollectedObj
+  - CollectibleList
+  - Obstacle
+  - Hole
+  - FinishLine
+  - SphereObj
+  - JoyStick
+  - Manager
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - Ground
+  - FinishGroundLayer
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
