@@ -74,7 +74,7 @@ public class CoinManager : MonoBehaviour
                 float duration = Random.Range(minAnimDuration, maxAnimDuration);
                 coin.transform.DOMove(targetPosition, duration);
                 //.SetEase(easeType).onComplete( coin.SetActive(false), coinsQueue.Enqueue(coin) );
-
+                
                 Coins++;
                 
                 
