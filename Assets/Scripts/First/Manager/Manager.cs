@@ -35,7 +35,6 @@ public class Manager : MonoBehaviour
     [SerializeField] GameObject playerCharacter;
     [SerializeField] GameObject enemyCharacter;
 
-    CanvasManager theCanvasManager;
     PlayerController thePlayer;
     Enemy theEnemy;
     
@@ -51,7 +50,6 @@ public class Manager : MonoBehaviour
             g_PlayerFeatherWing[i].SetActive(false);
             g_EnemyFeatherWing[i].SetActive(false);
         }
-        theCanvasManager = FindObjectOfType<CanvasManager>();
 
         enemyLead = false;  
         playerLead = false;

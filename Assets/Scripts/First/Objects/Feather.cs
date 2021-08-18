@@ -9,42 +9,40 @@ public class Feather : MonoBehaviour
     private Rigidbody rigid;
 
     private int JumpPower = 3;
-    
 
+    WaitForSeconds delay = new WaitForSeconds(0.5f);
+    //WaitForSeconds delay2 = new WaitForSeconds(0.6f);
     // ***** Particle
     public ParticleSystem p_FeatherDrop;
-    PlayerController thePlayer;
     NewPlayerController theNewPlayer;
+    Enemy theEnemy;
     private void Start()
     {
         theManager = FindObjectOfType<Manager>();
-        thePlayer = FindObjectOfType<PlayerController>();
         rigid = GetComponent<Rigidbody>();
         theNewPlayer = FindObjectOfType<NewPlayerController>();
+        theEnemy = FindObjectOfType<Enemy>();
         p_FeatherDrop.Stop();
     }
     private void Update()
     {
-        if(GameManager.Instance.mode_system2) // system change  -> cleaning
+        if (GameManager.Instance.mode_system2) // system change  -> cleaning
             Destroy(gameObject);
     }
     private void OnTriggerEnter(Collider other) //feather colllider
     {
-        if(other.CompareTag("Enemy"))
+        if (other.CompareTag("Enemy") && theEnemy.canGet)
         {
-            p_FeatherDrop.Play();
+            //p_FeatherDrop.Play();
             StartCoroutine(EnemyFeatherPickUp());
         }
-        if(thePlayer.canGet)
+
+        if (other.CompareTag("Player") && theNewPlayer.canGet)
         {
-            if (other.CompareTag("Player"))
-            {
-                p_FeatherDrop.Play();
-                StartCoroutine(PlayerFeatherPickUp());
-            }
+            //p_FeatherDrop.Play();
+            StartCoroutine(PlayerFeatherPickUp());
         }
-        //if(theNewPlayer.)
-      
+
     }
     void PickUp()
     {
@@ -53,16 +51,18 @@ public class Feather : MonoBehaviour
     }
     IEnumerator PlayerFeatherPickUp()
     {
+        yield return delay;
         theManager.player_IncreaseFeather(1);
         PickUp();
-        yield return new WaitForSeconds(0.6f);
+        yield return delay;
         Destroy(gameObject);
     }
     IEnumerator EnemyFeatherPickUp()
     {
+        yield return delay;
         theManager.enemy_IncreaseFeather(1);
         PickUp();
-        yield return new WaitForSeconds(0.6f);
+        yield return delay;
         Destroy(gameObject);
     }
 
