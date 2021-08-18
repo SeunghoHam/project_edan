@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Manager : MonoBehaviour
 {
-    public Text text_Coin;
+    //public Text text_Coin;
     public Text Result_Coin;
     
 
@@ -35,12 +35,12 @@ public class Manager : MonoBehaviour
     [SerializeField] GameObject playerCharacter;
     [SerializeField] GameObject enemyCharacter;
 
-    PlayerController thePlayer;
+    NewPlayerController thePlayer;
     Enemy theEnemy;
     
     private void Awake() 
     {
-        thePlayer = FindObjectOfType<PlayerController>();
+        thePlayer = FindObjectOfType<NewPlayerController>();
         theEnemy = FindObjectOfType<Enemy>();
     }
     void Start() 
@@ -87,7 +87,7 @@ public class Manager : MonoBehaviour
         {
             g_textPlayerFeather.SetActive(false);
             g_textEnemyFeather.SetActive(false);
-            text_Coin.text = currentCoinCount.ToString(); // format:"0#"
+            //text_Coin.text = currentCoinCount.ToString(); // format:"0#"
             Result_Coin.text = currentCoinCount.ToString();
         }
         

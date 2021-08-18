@@ -18,10 +18,12 @@ public class NewPlayerController : MonoBehaviour
     WaitForSeconds slideDelay = new WaitForSeconds(0.3f);
     WaitForSeconds GetDelay = new WaitForSeconds(1f);
     // ***** JoyStick
-    JoystickManager theJoyStickManager;
+    //JoystickManager theJoyStickManager;
     private float inputX;
     private float inputZ;
     private bool canMove = true;
+    private float joymoveSpeed = 5f;
+    Rigidbody rigid;
 
 
     // ***** settingPosiiton
@@ -49,23 +51,40 @@ public class NewPlayerController : MonoBehaviour
     Animator theAnimator;
     Manager theManager;
     PositionManager thePositionManager;
-    Rigidbody myrigid;
 
-    // Start is called before the first frame update
+    public static PlayerMovement Instance
+    {
+        get
+        {
+            if(instance == null)
+            {
+                instance = FindObjectOfType<PlayerMovement>();
+                if(instance == null)
+                {
+                    var instanceContainer = new GameObject ("PlayerMovement");
+                    instance = instanceContainer.AddComponent<PlayerMovement>();
+                    
+                }
+            }
+            return instance;
+        }
+    }
+    private static PlayerMovement instance;
+
     void Awake()
     {
-        theJoyStickManager = GameObject.FindGameObjectWithTag("JoyStick").GetComponent<JoystickManager>();        
         theAnimator = transform.GetChild(0).GetComponent<Animator>();
         theManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<Manager>();
         thePositionManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<PositionManager>();
         theRotation = GameObject.FindGameObjectWithTag("Manager").GetComponent<Rotation>();
         swipeCharacter = transform.GetChild(0).GetComponent<GameObject>();
         theCameraShake = FindObjectOfType<CameraShake>();
-        myrigid = GetComponent<Rigidbody>();
+        rigid = GetComponent<Rigidbody>();
     }
     void Start()
     {
         StartPosition = g_StartPosition.position;
+        joymoveSpeed = JoyStickMovement.Instance.joymoveSpeed;
     }
     // Update is called once per frame
     void Update()
@@ -76,7 +95,8 @@ public class NewPlayerController : MonoBehaviour
         }
         if (GameManager.Instance.mode_system1 == true)
         {
-            moveJoystick();
+            //moveJoystick();
+            Move();
             if(Input.GetKeyDown(KeyCode.K))
             {
                 theManager.player_IncreaseFeather(1);
@@ -84,7 +104,9 @@ public class NewPlayerController : MonoBehaviour
         }
         else if(GameManager.Instance.mode_system2 == true)
         {
-            theAnimator.SetBool("Flying", true);
+            this.rigid.useGravity = false;
+            this.rigid.mass = 1;
+            
             //transform.position += new Vector3(transform.position.x * moveSpeed * Time.deltaTime, transform.position.y, transform.position.z);
             transform.Translate(transform.forward * moveSpeed * Time.deltaTime);
             Swipe();
@@ -97,8 +119,8 @@ public class NewPlayerController : MonoBehaviour
         else if(GameManager.Instance.mode_system3 == true)
         {
             canGet = false;
+            theAnimator.SetBool("Flying", true);
             setPosition();
-            Debug.Log("╫ц╫╨еш3");
             if(Input.GetKeyDown(KeyCode.J))
             {
                 GameManager.Instance.setSystem2();
@@ -120,7 +142,31 @@ public class NewPlayerController : MonoBehaviour
         }
 
     }
+    void Move()
+    {
+        float moveHorizontal = Input.GetAxis("Horizontal");
+        float moveVertical = Input.GetAxis("Vertical");
+        
+        //rigid.velocity = new Vector3(moveHorizontal * joymoveSpeed, rigid.velocity.y, moveVertical * joymoveSpeed);
+        if(JoyStickMovement.Instance.joyVec.x != 0 || JoyStickMovement.Instance.joyVec.z != 0)
+        {
+            theAnimator.SetBool("Move", true);
+            
 
+                    rigid.velocity = new Vector3(JoyStickMovement.Instance.joyVec.x  * joymoveSpeed, 
+            rigid.velocity.y, 
+            JoyStickMovement.Instance.joyVec.y * joymoveSpeed);
+            
+            rigid.rotation =Quaternion.LookRotation(new Vector3(JoyStickMovement.Instance.joyVec.x,
+            0,
+             JoyStickMovement.Instance.joyVec.y));
+        }
+        else
+        {
+            theAnimator.SetBool("Move", false);
+        }
+    }
+    /*
     void moveJoystick()
     {
         inputX = theJoyStickManager.inputhorizontal();
@@ -133,7 +179,7 @@ public class NewPlayerController : MonoBehaviour
         {
             theAnimator.SetBool("Move", true);
         }
-    }
+    }*/
     void rotateCheck()
     {
         if (inputX > 0)

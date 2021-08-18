@@ -6,11 +6,12 @@ public class CameraManager : MonoBehaviour
 {
     public Transform target; // follwing target's transform
     //public Transform race_Target; // if Racint folliwing target
+    public Transform Camera;
     public Transform SwipeCharacter;
-    public GameObject Camera;
+    public Transform Player;
     private Transform tr; // camera's transform
     [SerializeField] float speed;
-    PlayerController thePlayer;
+    NewPlayerController thePlayer;
     
     Quaternion system2Camrot = Quaternion.identity;
 
@@ -25,9 +26,15 @@ public class CameraManager : MonoBehaviour
     Vector3 vel = Vector3.zero;
 
     Quaternion turn = Quaternion.identity;
+
+    Vector3 cameraPosition;
+
+    float offsetY = 6f;
+    float offsetZ = -9f;
+
     void Start()
     {
-        thePlayer = FindObjectOfType<PlayerController>();
+        thePlayer= FindObjectOfType<NewPlayerController>();
         tr = GetComponent<Transform>();
         speed = 15f;
 
@@ -40,11 +47,12 @@ public class CameraManager : MonoBehaviour
     //private void LateUpdate()
     void Update()
     {
-        tr = Camera.transform;
+        //tr = cameraPosition.transform.position;
 
         if (GameManager.Instance.mode_system1)
-            System1Cam();
-
+            //System1Cam();
+            //testCam();
+            Debug.Log("anBBoong");
         else if (GameManager.Instance.mode_system3)
             System3Cam();
         else if (GameManager.Instance.mode_system2)
@@ -71,7 +79,18 @@ public class CameraManager : MonoBehaviour
             tr.LookAt(target);
         }*/
     }
-
+    private void LateUpdate()
+    {
+        cameraPosition.x = thePlayer.transform.position.x;
+        cameraPosition.y  = thePlayer.transform.position.y + offsetY;
+        cameraPosition.z = thePlayer.transform.position.z + offsetZ;
+        transform.position = cameraPosition;
+    }
+    void testCam()
+    {
+        //tr.transform.position = new Vector3(transform.position.x , thePlayer.transform.position.y + offsetY, thePlayer.transform.position.z + offsetZ);
+      
+    }
     void System1Cam()
     {
         //tr.position = new Vector3(target.position.x, target.position.y + 10.0f, target.position.z - 13f);
