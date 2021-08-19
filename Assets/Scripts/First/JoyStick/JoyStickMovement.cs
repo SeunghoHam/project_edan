@@ -66,9 +66,8 @@ public class JoyStickMovement : MonoBehaviour
     public void Drop()
     {
         joyVec = Vector3.zero;
-        Debug.Log("drop");
         BGStick.gameObject.SetActive(false);
-        BGStick.transform.position= joyStickFirstPosition;
-        smallStick.transform.position = joyStickFirstPosition;
+        //BGStick.transform.position= joyStickFirstPosition;
+        //smallStick.transform.position = joyStickFirstPosition;
     }
 }

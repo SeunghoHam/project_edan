@@ -31,6 +31,7 @@ public class NewPlayerController : MonoBehaviour
     public Transform g_StartPosition;
     Vector3 StartPosition;
     public Transform g_FinishPosition;
+    private Quaternion turnUp = Quaternion.identity;
 
 
     // ***** Particle
@@ -42,7 +43,7 @@ public class NewPlayerController : MonoBehaviour
     // ***** Setting 
     private bool issetPosition;
     private bool finishsetPosition;
-    
+
     public bool canGet = true;
 
     // ***** Reference
@@ -56,14 +57,14 @@ public class NewPlayerController : MonoBehaviour
     {
         get
         {
-            if(instance == null)
+            if (instance == null)
             {
                 instance = FindObjectOfType<PlayerMovement>();
-                if(instance == null)
+                if (instance == null)
                 {
-                    var instanceContainer = new GameObject ("PlayerMovement");
+                    var instanceContainer = new GameObject("PlayerMovement");
                     instance = instanceContainer.AddComponent<PlayerMovement>();
-                    
+
                 }
             }
             return instance;
@@ -89,75 +90,75 @@ public class NewPlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             StartCoroutine(theCameraShake.Shake(0.15f, 4f));
         }
         if (GameManager.Instance.mode_system1 == true)
         {
             //moveJoystick();
-            Move();
-            if(Input.GetKeyDown(KeyCode.K))
+            if(canMove)
+                Move();
+            if (Input.GetKeyDown(KeyCode.K))
             {
                 theManager.player_IncreaseFeather(1);
             }
         }
-        else if(GameManager.Instance.mode_system2 == true)
+        else if (GameManager.Instance.mode_system2 == true)
         {
-            this.rigid.useGravity = false;
-            this.rigid.mass = 1;
-            
-            //transform.position += new Vector3(transform.position.x * moveSpeed * Time.deltaTime, transform.position.y, transform.position.z);
+            theAnimator.SetBool("Flying", true);
             transform.Translate(transform.forward * moveSpeed * Time.deltaTime);
             Swipe();
             if (Input.GetKey(KeyCode.L))
             {
                 theAnimator.SetBool("Falling", true);
+                rigid.useGravity = false;
+                //rigid.AddForce()
             }
-            else theAnimator.SetBool("Falling", false);
+            else
+            {
+                theAnimator.SetBool("Falling", false);
+            }
+            
         }
-        else if(GameManager.Instance.mode_system3 == true)
+        else if (GameManager.Instance.mode_system3 == true)
         {
             canGet = false;
             theAnimator.SetBool("Flying", true);
             setPosition();
-            if(Input.GetKeyDown(KeyCode.J))
+            if (Input.GetKeyDown(KeyCode.J))
             {
                 GameManager.Instance.setSystem2();
             }
         }
-       
-       
-        
+
+
+
     }
 
     private void FixedUpdate()
     {
-        if (GameManager.Instance.mode_system1 == true && canMove)
+        if(GameManager.Instance.mode_system2 == true)
         {
-            
-            Vector3 translate = (new Vector3(inputX * Time.deltaTime * 10f, 0, inputZ * Time.deltaTime * 10f));
-            transform.Translate(translate);
-            rotateCheck();
+            this.rigid.useGravity = true;
         }
-
     }
     void Move()
     {
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
-        
+
         //rigid.velocity = new Vector3(moveHorizontal * joymoveSpeed, rigid.velocity.y, moveVertical * joymoveSpeed);
-        if(JoyStickMovement.Instance.joyVec.x != 0 || JoyStickMovement.Instance.joyVec.z != 0)
+        if (JoyStickMovement.Instance.joyVec.x != 0 || JoyStickMovement.Instance.joyVec.z != 0)
         {
             theAnimator.SetBool("Move", true);
-            
 
-                    rigid.velocity = new Vector3(JoyStickMovement.Instance.joyVec.x  * joymoveSpeed, 
-            rigid.velocity.y, 
-            JoyStickMovement.Instance.joyVec.y * joymoveSpeed);
-            
-            rigid.rotation =Quaternion.LookRotation(new Vector3(JoyStickMovement.Instance.joyVec.x,
+
+            rigid.velocity = new Vector3(JoyStickMovement.Instance.joyVec.x * joymoveSpeed,
+    rigid.velocity.y,
+    JoyStickMovement.Instance.joyVec.y * joymoveSpeed);
+
+            rigid.rotation = Quaternion.LookRotation(new Vector3(JoyStickMovement.Instance.joyVec.x,
             0,
              JoyStickMovement.Instance.joyVec.y));
         }
@@ -180,18 +181,6 @@ public class NewPlayerController : MonoBehaviour
             theAnimator.SetBool("Move", true);
         }
     }*/
-    void rotateCheck()
-    {
-        if (inputX > 0)
-            theRotation.TurnRight();
-        else if (inputX < 0)
-            theRotation.TurnLeft();
-
-        if (inputZ > 0)
-            theRotation.TurnUp();
-        else if (inputZ < 0)
-            theRotation.TurnDown();
-    }
     void setPosition()
     {
         //swipeCharacter.transform.position = transform.position;
@@ -228,8 +217,31 @@ public class NewPlayerController : MonoBehaviour
             }
         }
 
-    }
+        if (other.CompareTag("setSystem2"))
+        {
+            theAnimator.SetBool("Move", false);
+            canMove = false;
+            setRot();
+            StartCoroutine(setSystem2());
+        }
 
+    }
+    IEnumerator setSystem2()
+    {
+
+        yield return new WaitForSeconds(1f);
+        GameManager.Instance.mode_system1 = false;
+        GameManager.Instance.mode_system2 = true;
+        yield return null;
+
+    }
+    void setRot()
+    {
+        this.rigid.useGravity = false;
+        this.rigid.mass = 1;
+        turnUp.eulerAngles = new Vector3(0, 0, 0);
+        transform.rotation = Quaternion.Lerp(transform.rotation, turnUp, 1);
+    }
     IEnumerator stopSlide()
     {
         yield return slideDelay;

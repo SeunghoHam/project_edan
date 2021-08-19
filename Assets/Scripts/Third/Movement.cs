@@ -26,8 +26,6 @@ public class Movement : MonoBehaviour
     void Update()
     {
         GetInput();
-        if (Input.GetMouseButtonDown(0))
-            Debug.Log("Å¬¸¯Áß");
     }
     private void FixedUpdate()
     {

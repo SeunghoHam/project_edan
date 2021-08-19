@@ -4,7 +4,6 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Player_Pickup
   - Feather
   - Coin
   - Enemy
@@ -23,6 +22,7 @@ TagManager:
   - SphereObj
   - JoyStick
   - Manager
+  - setSystem2
   layers:
   - Default
   - TransparentFX
