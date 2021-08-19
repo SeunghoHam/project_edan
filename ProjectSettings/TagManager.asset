@@ -23,6 +23,7 @@ TagManager:
   - JoyStick
   - Manager
   - setSystem2
+  - Multipler
   layers:
   - Default
   - TransparentFX

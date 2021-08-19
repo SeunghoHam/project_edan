@@ -7,7 +7,7 @@ public class CanvasManager : MonoBehaviour
 {
     [SerializeField] GameObject text_Coin;
     [SerializeField] GameObject g_Tutorial;
-    [SerializeField] GameObject image_Timer;
+    [SerializeField] GameObject g_Gauge;
     [SerializeField] GameObject g_Result;
     [SerializeField] GameObject g_Current1;
     [SerializeField] GameObject g_Current2;
@@ -65,7 +65,6 @@ public class CanvasManager : MonoBehaviour
     {
         g_Current1.SetActive(true);
         g_Current2.SetActive(true);
-        image_Timer.SetActive(false); 
 
         g_Tutorial.SetActive(false);
         text_Coin.SetActive(true);
@@ -73,7 +72,7 @@ public class CanvasManager : MonoBehaviour
     }
     void setSystem3()
     {
-        image_Timer.SetActive(false);
+        g_Gauge.SetActive(false);
 
     }
     void setSystem2()

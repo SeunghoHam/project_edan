@@ -55,7 +55,7 @@ public class JoyStickMovement : MonoBehaviour
 
         
         float stickDistance = Vector3.Distance ( DragPosition, stickFirstPosition);
-        Debug.Log(joyVec.x + "  " + joyVec.y);
+        //Debug.Log(joyVec.x + "  " + joyVec.y);
         if(stickDistance < stickRadius)
         {
             smallStick.transform.position = stickFirstPosition + joyVec * stickDistance;

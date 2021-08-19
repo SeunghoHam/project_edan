@@ -32,9 +32,6 @@ public class NewPlayerController : MonoBehaviour
 
     // ***** settingPosiiton
     Vector3 vel = Vector3.zero;
-    public Transform g_StartPosition;
-    Vector3 StartPosition;
-    public Transform g_FinishPosition;
     private Quaternion turnUp = Quaternion.identity;
 
 
@@ -88,7 +85,7 @@ public class NewPlayerController : MonoBehaviour
     }
     void Start()
     {
-        StartPosition = g_StartPosition.position;
+        //StartPosition = g_StartPosition.position;
         joymoveSpeed = JoyStickMovement.Instance.joymoveSpeed;
     }
     // Update is called once per frame
@@ -112,12 +109,13 @@ public class NewPlayerController : MonoBehaviour
         {
             theAnimator.SetBool("Flying", true);
             transform.Translate(transform.forward * moveSpeed * Time.deltaTime);
+            
+            transform.Translate(Vector3.down * Time.deltaTime);
             SkyRotation();
             //Swipe();
             if (Input.GetKey(KeyCode.L))
             {
                 theAnimator.SetBool("Falling", true);
-                rigid.useGravity = false;
                 //rigid.AddForce()
             }
             else
@@ -130,11 +128,10 @@ public class NewPlayerController : MonoBehaviour
         {
             canGet = false;
             theAnimator.SetBool("Flying", true);
-            setPosition();
-            if (Input.GetKeyDown(KeyCode.J))
-            {
-                GameManager.Instance.setSystem2();
-            }
+            theAnimator.SetBool("Move", false);
+            
+           
+            setRot();
         }
 
 
@@ -180,14 +177,21 @@ public class NewPlayerController : MonoBehaviour
             transform.Rotate(left * Time.deltaTime);
 
         if(JoyStickMovement.Instance.joyVec.y > 0.5f)
-            transform.Rotate(up * Time.deltaTime);
-        else if(JoyStickMovement.Instance.joyVec.y < -0.5f)
-            transform.Rotate(down * Time.deltaTime);
+        {
+            //transform.Rotate(up * Time.deltaTime);
+            theAnimator.SetBool("Falling", true);
+        }
+        //else theAnimator.SetBool("Falling", false);
+        
+        
+        if(JoyStickMovement.Instance.joyVec.y < -0.01f)
+            JoyStickMovement.Instance.joyVec.y = 0;
+            //transform.Rotate(down * Time.deltaTime);
             
     }
     void Fall()
     {
-
+        
     }
     /*
     void moveJoystick()
@@ -207,8 +211,8 @@ public class NewPlayerController : MonoBehaviour
     {
         //swipeCharacter.transform.position = transform.position;
         theAnimator.SetBool("Move", false);
-        transform.position = Vector3.SmoothDamp(transform.position, StartPosition, ref vel, 1f);
-        theRotation.TurnUp();
+        
+        //transform.eulerAngles = Quaternion.Lerp(transform.rotation, new Vector3(0,0,0) ,1);
     }
     void Swipe()
     {
@@ -242,6 +246,7 @@ public class NewPlayerController : MonoBehaviour
         if (other.CompareTag("setSystem2"))
         {
             theAnimator.SetBool("Move", false);
+            canGet = false;
             canMove = false;
             setRot();
             StartCoroutine(setSystem2());
@@ -250,17 +255,12 @@ public class NewPlayerController : MonoBehaviour
     }
     IEnumerator setSystem2()
     {
-
-        yield return new WaitForSeconds(1f);
-        GameManager.Instance.mode_system1 = false;
-        GameManager.Instance.mode_system2 = true;
+        GameManager.Instance.mode_system3 = false;
         yield return null;
-
+        GameManager.Instance.mode_system2 = true;
     }
     void setRot()
     {
-        this.rigid.useGravity = false;
-        this.rigid.mass = 1;
         turnUp.eulerAngles = new Vector3(0, 0, 0);
         transform.rotation = Quaternion.Lerp(transform.rotation, turnUp, 1);
     }

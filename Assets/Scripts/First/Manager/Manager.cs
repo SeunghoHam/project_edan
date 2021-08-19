@@ -13,27 +13,19 @@ public class Manager : MonoBehaviour
     public int currentEnemyFeather = 0; 
     private int currentCoinCount = 0;
 
+    public int maxFeather = 8;
+
     public bool playerLead;
     public bool enemyLead;
 
+    // Gauge
+    public Slider sliderFeatherCount;
 
     [SerializeField] GameObject[] g_PlayerFeatherWing;
     [SerializeField] GameObject[] g_EnemyFeatherWing;
 
     //[SerializeField] ParticleSystem playerCrownParticle;
 
-    [SerializeField] Text playerCfeather;
-    [SerializeField] Text enemyCfeather;
-    [SerializeField] GameObject g_textPlayerFeather;
-    [SerializeField] GameObject g_textEnemyFeather;
-
-    public ParticleSystem WingCharge;
-    public ParticleSystem WingCharge_e;
-    // ***** Timer
-
-    [Header("Character")]
-    [SerializeField] GameObject playerCharacter;
-    [SerializeField] GameObject enemyCharacter;
 
     NewPlayerController thePlayer;
     Enemy theEnemy;
@@ -56,28 +48,27 @@ public class Manager : MonoBehaviour
     }
     void Update()
     {
-
+        sliderFeatherCount.value = currentPlayerFeather /  maxFeather;
         checkFeather();
         if (currentPlayerFeather >= 9)
-            currentPlayerFeather = 8;
+            currentPlayerFeather = maxFeather;
         else if (currentPlayerFeather <= 0)
             currentPlayerFeather = 0;
 
         if (currentEnemyFeather >= 9)
-            currentEnemyFeather = 8;
+            currentEnemyFeather = maxFeather;
         else if (currentEnemyFeather <= 0)
             currentEnemyFeather = 0;
 
         if(GameManager.Instance.mode_system1)
         {
-            playerCfeather.text = currentPlayerFeather.ToString();
-            enemyCfeather.text = currentEnemyFeather.ToString();
-            if(currentPlayerFeather >= 8)
+            if(currentPlayerFeather >= maxFeather)
             {
-                thePlayer.canGet = false;
-                StartCoroutine(Pass());
+
+                //StartCoroutine(Pass());
+                Debug.Log("Minimum Feather get");
             }
-            if(currentEnemyFeather >=8)
+            if(currentEnemyFeather >=maxFeather)
             {
                 theEnemy.canGet = false;
                 theEnemy.enemySystem = true;
@@ -85,8 +76,6 @@ public class Manager : MonoBehaviour
         }
         else if(GameManager.Instance.mode_system2)
         {
-            g_textPlayerFeather.SetActive(false);
-            g_textEnemyFeather.SetActive(false);
             //text_Coin.text = currentCoinCount.ToString(); // format:"0#"
             Result_Coin.text = currentCoinCount.ToString();
         }
@@ -155,43 +144,19 @@ public class Manager : MonoBehaviour
     {
         if(currentPlayerFeather > currentEnemyFeather)
         {
-
-            // CrownParticle
-            //StartCoroutine(CrownParticle_p());
-            //playerCrownParticle.Play();
             enemyLead = false;
-            playerLead = true;
-
-            /* 플레이어 적과 충돌 ***************************
-            if(thePlayer.isCollision == true) // player > enemy
-            {
-                currnetPlayerFeather += currentEnemyFeather;
-                currentEnemyFeather = 0;
-                StartCoroutine(CrownParticle_p());
-            }*/
+            playerLead = true;   
         }
-        
+        else if(currentPlayerFeather == currentEnemyFeather)
+        {
+            enemyLead= false;
+            playerLead = false;
+        }
         else if(currentPlayerFeather < currentEnemyFeather)
         {
-
             enemyLead = true;
-            playerLead = false;
-            /*
-            if(thePlayer.isCollision == true) // player < enemy
-            {
-                currentEnemyFeather += currnetPlayerFeather;
-                currnetPlayerFeather = 0;
-                for(int i=0; i < g_PlayerFeather.Length; i++)
-                {
-                    g_PlayerFeather[i].SetActive(false);
-                    // 깃털 빠지는 애니메이션
-                }
-            }*/
+            playerLead = false;            
         }
-    }
-    void resetFeather()
-    {
-        
     }
     public void GetCoin(int _num)
     {
@@ -200,7 +165,6 @@ public class Manager : MonoBehaviour
     IEnumerator Pass()
     {
         GameManager.Instance.mode_system1 = false;
-        WingCharge.Play();
         yield return null;
         GameManager.Instance.mode_system3 = true;
     }
