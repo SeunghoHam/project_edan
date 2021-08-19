@@ -13,7 +13,11 @@ public class NewPlayerController : MonoBehaviour
     private float moveLength = 2f;
     private float moveSpeed = 15f;
 
-
+    Vector3 left = new Vector3(0,-20f,0);
+    Vector3 right = new Vector3(0,20f,0);
+    Vector3 up = new Vector3(-20f, 0,0);
+    Vector3 down = new Vector3(20f,0,0);
+    private Quaternion turnLeft = Quaternion.identity;
 
     WaitForSeconds slideDelay = new WaitForSeconds(0.3f);
     WaitForSeconds GetDelay = new WaitForSeconds(1f);
@@ -97,7 +101,7 @@ public class NewPlayerController : MonoBehaviour
         if (GameManager.Instance.mode_system1 == true)
         {
             //moveJoystick();
-            if(canMove)
+            //if(canMove)
                 Move();
             if (Input.GetKeyDown(KeyCode.K))
             {
@@ -108,7 +112,8 @@ public class NewPlayerController : MonoBehaviour
         {
             theAnimator.SetBool("Flying", true);
             transform.Translate(transform.forward * moveSpeed * Time.deltaTime);
-            Swipe();
+            SkyRotation();
+            //Swipe();
             if (Input.GetKey(KeyCode.L))
             {
                 theAnimator.SetBool("Falling", true);
@@ -140,7 +145,7 @@ public class NewPlayerController : MonoBehaviour
     {
         if(GameManager.Instance.mode_system2 == true)
         {
-            this.rigid.useGravity = true;
+            
         }
     }
     void Move()
@@ -155,8 +160,8 @@ public class NewPlayerController : MonoBehaviour
 
 
             rigid.velocity = new Vector3(JoyStickMovement.Instance.joyVec.x * joymoveSpeed,
-    rigid.velocity.y,
-    JoyStickMovement.Instance.joyVec.y * joymoveSpeed);
+            rigid.velocity.y,
+            JoyStickMovement.Instance.joyVec.y * joymoveSpeed);
 
             rigid.rotation = Quaternion.LookRotation(new Vector3(JoyStickMovement.Instance.joyVec.x,
             0,
@@ -166,6 +171,23 @@ public class NewPlayerController : MonoBehaviour
         {
             theAnimator.SetBool("Move", false);
         }
+    }
+    void SkyRotation()
+    {
+        if(JoyStickMovement.Instance.joyVec.x > 0.5f)
+            transform.Rotate(right * Time.deltaTime);
+        else if(JoyStickMovement.Instance.joyVec.x < -0.5f)
+            transform.Rotate(left * Time.deltaTime);
+
+        if(JoyStickMovement.Instance.joyVec.y > 0.5f)
+            transform.Rotate(up * Time.deltaTime);
+        else if(JoyStickMovement.Instance.joyVec.y < -0.5f)
+            transform.Rotate(down * Time.deltaTime);
+            
+    }
+    void Fall()
+    {
+
     }
     /*
     void moveJoystick()

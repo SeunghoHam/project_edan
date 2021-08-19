@@ -51,8 +51,7 @@ public class CameraManager : MonoBehaviour
 
         if (GameManager.Instance.mode_system1)
             //System1Cam();
-            //testCam();
-            Debug.Log("anBBoong");
+            testCam();
         else if (GameManager.Instance.mode_system3)
             System3Cam();
         else if (GameManager.Instance.mode_system2)

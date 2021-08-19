@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class CanvasManager : MonoBehaviour
 {
-    [SerializeField] GameObject JoyStick;
     [SerializeField] GameObject text_Coin;
     [SerializeField] GameObject g_Tutorial;
     [SerializeField] GameObject image_Timer;
@@ -64,7 +63,6 @@ public class CanvasManager : MonoBehaviour
 
     void setSystem1()
     {
-        JoyStick.SetActive(true);
         g_Current1.SetActive(true);
         g_Current2.SetActive(true);
         image_Timer.SetActive(false); 
@@ -75,13 +73,11 @@ public class CanvasManager : MonoBehaviour
     }
     void setSystem3()
     {
-        JoyStick.SetActive(false);
         image_Timer.SetActive(false);
 
     }
     void setSystem2()
     {
-        JoyStick.SetActive(false);
         g_Tutorial.SetActive(false);
 
         text_Coin.SetActive(true);

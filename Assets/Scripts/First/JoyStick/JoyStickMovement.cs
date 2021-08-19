@@ -44,16 +44,18 @@ public class JoyStickMovement : MonoBehaviour
         BGStick.transform.position= Input.mousePosition;
         smallStick.transform.position = Input.mousePosition;
         stickFirstPosition = Input.mousePosition;
-        joymoveSpeed = 5f;
     }
     public void Drag(BaseEventData baseEventData)
     {
+        
         PointerEventData pointerEventData = baseEventData as PointerEventData;
         Vector3 DragPosition = pointerEventData.position;
         joyVec = (DragPosition - stickFirstPosition).normalized;
 
-        float stickDistance = Vector3.Distance ( DragPosition, stickFirstPosition);
 
+        
+        float stickDistance = Vector3.Distance ( DragPosition, stickFirstPosition);
+        Debug.Log(joyVec.x + "  " + joyVec.y);
         if(stickDistance < stickRadius)
         {
             smallStick.transform.position = stickFirstPosition + joyVec * stickDistance;
@@ -67,6 +69,7 @@ public class JoyStickMovement : MonoBehaviour
     {
         joyVec = Vector3.zero;
         BGStick.gameObject.SetActive(false);
+
         //BGStick.transform.position= joyStickFirstPosition;
         //smallStick.transform.position = joyStickFirstPosition;
     }
