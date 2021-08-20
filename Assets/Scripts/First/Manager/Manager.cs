@@ -48,7 +48,7 @@ public class Manager : MonoBehaviour
     }
     void Update()
     {
-        sliderFeatherCount.value = currentPlayerFeather /  maxFeather;
+        sliderFeatherCount.value = (float)currentPlayerFeather /  (float)maxFeather;
         checkFeather();
         if (currentPlayerFeather >= 9)
             currentPlayerFeather = maxFeather;

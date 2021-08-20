@@ -13,14 +13,11 @@ public class NewPlayerController : MonoBehaviour
     private float moveLength = 2f;
     private float moveSpeed = 15f;
 
-    Vector3 left = new Vector3(0,-20f,0);
-    Vector3 right = new Vector3(0,20f,0);
-    Vector3 up = new Vector3(-20f, 0,0);
-    Vector3 down = new Vector3(20f,0,0);
-    private Quaternion turnLeft = Quaternion.identity;
+
 
     WaitForSeconds slideDelay = new WaitForSeconds(0.3f);
     WaitForSeconds GetDelay = new WaitForSeconds(1f);
+    WaitForSeconds flying = new WaitForSeconds(1f);
     // ***** JoyStick
     //JoystickManager theJoyStickManager;
     private float inputX;
@@ -29,31 +26,44 @@ public class NewPlayerController : MonoBehaviour
     private float joymoveSpeed = 5f;
     Rigidbody rigid;
 
+    private bool system2Flying = true;
+
 
     // ***** settingPosiiton
     Vector3 vel = Vector3.zero;
-    private Quaternion turnUp = Quaternion.identity;
+    public Transform tf_FinishPosition;
 
+    public Transform tf_WingCenter;
+    private Quaternion up = Quaternion.identity;
+    private Quaternion left = Quaternion.identity;
+    private Quaternion right = Quaternion.identity;
 
     // ***** Particle
     public ParticleSystem speedEffect;
-    public ParticleSystem StrongspeedEffect;
-    public ParticleSystem jumpEffect;
-
+    public ParticleSystem upperEffect;
 
     // ***** Setting 
     private bool issetPosition;
     private bool finishsetPosition;
 
     public bool canGet = true;
+    // ***** Time
+    private float timeLeft = 1.0f;
+    private float timeNext = 0.0f;
 
+
+    // ***** Floating
+    [SerializeField] GameObject text_multipler;
     // ***** Reference
     CameraShake theCameraShake;
     Rotation theRotation;
     Animator theAnimator;
     Manager theManager;
     PositionManager thePositionManager;
+    ScoreManager theScoreManager;
+    CoinManager theCoinManager;
 
+    /*
     public static PlayerMovement Instance
     {
         get
@@ -71,7 +81,7 @@ public class NewPlayerController : MonoBehaviour
             return instance;
         }
     }
-    private static PlayerMovement instance;
+    private static PlayerMovement instance;*/
 
     void Awake()
     {
@@ -79,6 +89,8 @@ public class NewPlayerController : MonoBehaviour
         theManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<Manager>();
         thePositionManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<PositionManager>();
         theRotation = GameObject.FindGameObjectWithTag("Manager").GetComponent<Rotation>();
+        theScoreManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<ScoreManager>();
+        theCoinManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<CoinManager>();
         swipeCharacter = transform.GetChild(0).GetComponent<GameObject>();
         theCameraShake = FindObjectOfType<CameraShake>();
         rigid = GetComponent<Rigidbody>();
@@ -87,6 +99,8 @@ public class NewPlayerController : MonoBehaviour
     {
         //StartPosition = g_StartPosition.position;
         joymoveSpeed = JoyStickMovement.Instance.joymoveSpeed;
+        up.eulerAngles = new Vector3(0, 0, 0);
+
     }
     // Update is called once per frame
     void Update()
@@ -97,8 +111,7 @@ public class NewPlayerController : MonoBehaviour
         }
         if (GameManager.Instance.mode_system1 == true)
         {
-            //moveJoystick();
-            //if(canMove)
+            if (canMove)
                 Move();
             if (Input.GetKeyDown(KeyCode.K))
             {
@@ -107,32 +120,37 @@ public class NewPlayerController : MonoBehaviour
         }
         else if (GameManager.Instance.mode_system2 == true)
         {
-            theAnimator.SetBool("Flying", true);
-            transform.Translate(transform.forward * moveSpeed * Time.deltaTime);
-            
-            transform.Translate(Vector3.down * Time.deltaTime);
-            SkyRotation();
-            //Swipe();
-            if (Input.GetKey(KeyCode.L))
+            if (system2Flying)
             {
-                theAnimator.SetBool("Falling", true);
-                //rigid.AddForce()
+                speedEffect.Play();
+                theAnimator.SetBool("Flying", true);
+                Fly();
+                transform.Translate(transform.forward * moveSpeed * Time.deltaTime);
+                transform.Translate(Vector3.down * Time.deltaTime);
+                if (Input.GetKey(KeyCode.L))
+                {
+                    theAnimator.SetBool("Falling", true);
+                }
+                else
+                {
+                    theAnimator.SetBool("Falling", false);
+                }
             }
-            else
-            {
-                theAnimator.SetBool("Falling", false);
-            }
-            
+
+
+
         }
         else if (GameManager.Instance.mode_system3 == true)
         {
             canGet = false;
             theAnimator.SetBool("Flying", true);
-            theAnimator.SetBool("Move", false);
-            
-           
             setRot();
+            if (Input.GetKeyDown(KeyCode.J))
+            {
+                GameManager.Instance.setSystem2();
+            }
         }
+
 
 
 
@@ -140,9 +158,9 @@ public class NewPlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(GameManager.Instance.mode_system2 == true)
+        if (GameManager.Instance.mode_system2 == true)
         {
-            
+            this.rigid.useGravity = true;
         }
     }
     void Move()
@@ -157,8 +175,8 @@ public class NewPlayerController : MonoBehaviour
 
 
             rigid.velocity = new Vector3(JoyStickMovement.Instance.joyVec.x * joymoveSpeed,
-            rigid.velocity.y,
-            JoyStickMovement.Instance.joyVec.y * joymoveSpeed);
+    rigid.velocity.y,
+    JoyStickMovement.Instance.joyVec.y * joymoveSpeed);
 
             rigid.rotation = Quaternion.LookRotation(new Vector3(JoyStickMovement.Instance.joyVec.x,
             0,
@@ -168,30 +186,6 @@ public class NewPlayerController : MonoBehaviour
         {
             theAnimator.SetBool("Move", false);
         }
-    }
-    void SkyRotation()
-    {
-        if(JoyStickMovement.Instance.joyVec.x > 0.5f)
-            transform.Rotate(right * Time.deltaTime);
-        else if(JoyStickMovement.Instance.joyVec.x < -0.5f)
-            transform.Rotate(left * Time.deltaTime);
-
-        if(JoyStickMovement.Instance.joyVec.y > 0.5f)
-        {
-            //transform.Rotate(up * Time.deltaTime);
-            theAnimator.SetBool("Falling", true);
-        }
-        //else theAnimator.SetBool("Falling", false);
-        
-        
-        if(JoyStickMovement.Instance.joyVec.y < -0.01f)
-            JoyStickMovement.Instance.joyVec.y = 0;
-            //transform.Rotate(down * Time.deltaTime);
-            
-    }
-    void Fall()
-    {
-        
     }
     /*
     void moveJoystick()
@@ -207,12 +201,38 @@ public class NewPlayerController : MonoBehaviour
             theAnimator.SetBool("Move", true);
         }
     }*/
-    void setPosition()
+
+    void Fly()
     {
-        //swipeCharacter.transform.position = transform.position;
-        theAnimator.SetBool("Move", false);
-        
-        //transform.eulerAngles = Quaternion.Lerp(transform.rotation, new Vector3(0,0,0) ,1);
+
+        if (JoyStickMovement.Instance.joyVec.x > 0.5f)
+        {
+            right.eulerAngles = new Vector3(20f, 0, 0);
+            transform.Rotate(new Vector3(0, 20f, 0) * Time.deltaTime);
+        }
+        else if (JoyStickMovement.Instance.joyVec.x < -0.5f)
+        {
+            transform.Rotate(new Vector3(0, -20f, 0) * Time.deltaTime);
+        }
+
+        if ((JoyStickMovement.Instance.joyVec.y > 0.5f) && theManager.currentPlayerFeather >= 1)
+        {
+            transform.Translate(Vector3.up * 10 * Time.deltaTime);
+            if (Time.time > timeNext)
+            {
+                timeNext = Time.time + timeLeft;
+                theManager.player_DecreaseFeather(1);
+                theAnimator.SetBool("Falling", true);
+                upperEffect.Play();
+            }
+
+            //StartCoroutine(DecreaseFeather());
+        }
+        else
+        {
+            //theAnimator.SetBool("Falling", false);
+            upperEffect.Stop();
+        }
     }
     void Swipe()
     {
@@ -235,34 +255,73 @@ public class NewPlayerController : MonoBehaviour
     {
         if (canGet)
         {
-            if (other.CompareTag("Feather"))
+            if (other.gameObject.CompareTag("Feather"))
             {
+                theManager.player_IncreaseFeather(1);
                 canMove = false;
                 theAnimator.SetTrigger("PickUp");
                 StartCoroutine(PickupDelay());
             }
         }
 
-        if (other.CompareTag("setSystem2"))
+        if (other.gameObject.CompareTag("setSystem2"))
         {
             theAnimator.SetBool("Move", false);
-            canGet = false;
             canMove = false;
             setRot();
             StartCoroutine(setSystem2());
         }
+        int i;
+        if(other.gameObject.CompareTag("Multipler"))
+        {
+            for(i=0; i< 2; i++)
+            {
+                Debug.Log("multiper collision");
+                theScoreManager.distanceScore *= 2;
+            }
 
+        }
+        i =0;
+        if (other.gameObject.CompareTag("RaceFinish"))
+        {
+            setsystem3();
+        }
+        if(other.gameObject.CompareTag("Coin"))
+        {
+            theCoinManager.AddCoins(other.transform.position, 1);
+        }
+    }
+    void setsystem3()
+    {
+        transform.rotation = Quaternion.Lerp(transform.rotation, up, 1f);
+        system2Flying = false;
+        transform.position = Vector3.Lerp(transform.position,tf_FinishPosition.transform.position, 1f);
+        //transform.position = Vector3.SmoothDamp(transform.position, tf_FinishPosition.transform.position, ref vel, 1f);
+        speedEffect.Stop();
+        upperEffect.Stop();
+        theAnimator.SetBool("Flying", false);
+        
+    }
+    IEnumerator floatingtextAnim()
+    {
+        
+        yield return new WaitForSeconds(0.3f);
+    }
+    IEnumerator DecreaseFeather()
+    {
+        theManager.player_DecreaseFeather(1);
+        yield return flying;
     }
     IEnumerator setSystem2()
     {
-        GameManager.Instance.mode_system3 = false;
-        yield return null;
+        GameManager.Instance.mode_system1 = false;
         GameManager.Instance.mode_system2 = true;
+        yield return null;
     }
     void setRot()
     {
-        turnUp.eulerAngles = new Vector3(0, 0, 0);
-        transform.rotation = Quaternion.Lerp(transform.rotation, turnUp, 1);
+        
+        transform.rotation = Quaternion.Lerp(transform.rotation, up, 1);
     }
     IEnumerator stopSlide()
     {

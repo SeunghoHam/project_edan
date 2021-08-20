@@ -16,22 +16,24 @@ public class FeatherSpawn : MonoBehaviour
 
      private void Awake() 
     {
-        CreateandSpwan();
+        //CreateandSpwan();
 
-        for(int i=0; i< featherSpawnCount; ++i)
-        {
-            //int index= Random.Range(0, prefab_Feather.Length);
-            float x = Random.Range(-9f, 9.1f); 
-            float z = Random.Range(-21f, -3f);
-            Vector3 position = new Vector3(x,24,z);
-
-            Instantiate(prefab_Feather, position, Quaternion.identity);
-        }
+      
     }
     private void Start()
     {
-        thePlayer = FindObjectOfType<Player>();
-        //SpawnerSpwan();
+        Transform Parent = GameObject.Find("FeatherSpawner").GetComponent<Transform>();
+        for(int i=0; i< featherSpawnCount; ++i)
+        {
+            //int index= Random.Range(0, prefab_Feather.Length);
+            float x = Random.Range(-9f, 9f); 
+            float z = Random.Range(43f, 60f);
+            Vector3 position = new Vector3(x,24,z);
+
+            //Instantiate(prefab_Feather, position, Quaternion.identity);
+            GameObject clone = Instantiate(prefab_Feather, position, Quaternion.identity);
+            clone.transform.parent = Parent; 
+        }
         
     }
 

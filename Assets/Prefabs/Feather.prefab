@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 2178966078632562931}
   m_Layer: 0
   m_Name: Feather
-  m_TagString: Untagged
+  m_TagString: Feather
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -97,7 +97,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ccb008e1021e754cb54b5b113db7905, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  p_FeatherDrop: {fileID: 6957357912707296823}
 --- !u!65 &7661389247129573054
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -110,7 +109,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 2, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.18, z: 0}
 --- !u!54 &2178966078632562931
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -187,10 +186,5 @@ PrefabInstance:
 --- !u!4 &6957357912721331781 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1398845767593968204, guid: 54c5110c961a9ab4a82bac5aafbccced, type: 3}
-  m_PrefabInstance: {fileID: 8350855651999437833}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &6957357912707296823 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 1398845767608089150, guid: 54c5110c961a9ab4a82bac5aafbccced, type: 3}
   m_PrefabInstance: {fileID: 8350855651999437833}
   m_PrefabAsset: {fileID: 0}

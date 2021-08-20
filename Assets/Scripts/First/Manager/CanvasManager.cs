@@ -11,6 +11,7 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] GameObject g_Result;
     [SerializeField] GameObject g_Current1;
     [SerializeField] GameObject g_Current2;
+    [SerializeField] GameObject g_Score;
 
     public bool isTutorial;
 
@@ -69,6 +70,7 @@ public class CanvasManager : MonoBehaviour
         g_Tutorial.SetActive(false);
         text_Coin.SetActive(true);
         g_Result.SetActive(false);
+        g_Score.SetActive(false);
     }
     void setSystem3()
     {
@@ -80,7 +82,7 @@ public class CanvasManager : MonoBehaviour
         g_Tutorial.SetActive(false);
 
         text_Coin.SetActive(true);
-
+        g_Score.SetActive(true);
         
         //if(tutoShow == true)
         //   return;

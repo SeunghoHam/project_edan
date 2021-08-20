@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class ScoreManager : MonoBehaviour
 {
     int currentScore;
-    int distanceScore;
+    public int distanceScore;
     int multiplerScore;
     float maxDistance; 
 
@@ -19,13 +19,14 @@ public class ScoreManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        multiplerScore = 1;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(!setOriginPos && GameManager.Instance.mode_system3)
+        //Debug.Log(currentScore);
+        if(!setOriginPos&&GameManager.Instance.mode_system2)
         {
             setOriginPos = true;
             originPosZ = tf_Player.position.z;
@@ -37,8 +38,9 @@ public class ScoreManager : MonoBehaviour
             maxDistance = tf_Player.position.z;
             distanceScore = Mathf.RoundToInt(maxDistance - originPosZ);
         }
-        currentScore = distanceScore;
+        currentScore = distanceScore / 10;
         text_Score.text = currentScore.ToString();
 
     }
+    
 }
