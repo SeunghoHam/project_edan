@@ -126,7 +126,7 @@ public class NewPlayerController : MonoBehaviour
                 theAnimator.SetBool("Flying", true);
                 Fly();
                 transform.Translate(transform.forward * moveSpeed * Time.deltaTime);
-                transform.Translate(Vector3.down * Time.deltaTime);
+                transform.Translate(Vector3.down * Time.deltaTime *2);
                 if (Input.GetKey(KeyCode.L))
                 {
                     theAnimator.SetBool("Falling", true);
